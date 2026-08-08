@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Radio Haïti</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="theme-color" content="#0B3D6E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy: #0B3D6E;
+    --navy-deep: #062845;
+    --accent: #1E90C7;
+    --live: #E2472D;
+    --paper: #F6F5F1;
+    --card: #FFFFFF;
+    --ink: #16202B;
+    --ink-soft: #5B6773;
+    --line: #E4E1D8;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{margin:0; padding:0; background:var(--paper); color:var(--ink); font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased;}
+  body{padding-bottom:28px;}
+
+  /* ---------- Masthead ---------- */
+  .masthead{
+    background: var(--navy);
+    color:#fff;
+    padding: 14px 16px 0;
+    position: sticky; top:0; z-index:20;
+    box-shadow: 0 2px 14px rgba(6,40,69,.18);
+  }
+  .masthead-row{
+    display:flex; align-items:center; gap:10px; padding-bottom:12px;
+  }
+  .masthead-icon{
+    width:34px; height:28px; background:#fff; border-radius:9px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .masthead-icon svg{ width:20px; height:20px; }
+  .masthead-title{
+    font-family:'Fraunces', serif; font-weight:600; font-size:19px; letter-spacing:.2px;
+  }
+  .masthead-date{
+    font-family:'IBM Plex Mono', monospace; font-size:10.5px;
+    text-transform:uppercase; letter-spacing:.06em; color:rgba(255,255,255,.65);
+    text-align:right; line-height:1.3; margin-left:8px;
+  }
+
+  /* ---------- Ticker ---------- */
+  .ticker-wrap{
+    background: var(--navy-deep);
+    overflow:hidden; position:relative; height:34px;
+    display:flex; align-items:center;
+    border-top: 1px solid rgba(255,255,255,.08);
+  }
+  .ticker-label{
+    background: var(--live); color:#fff; font-family:'IBM Plex Mono',monospace;
+    font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+    padding: 6px 10px; flex-shrink:0; height:100%; display:flex; align-items:center; z-index:2;
+  }
+  .ticker-track{
+    display:flex; white-space:nowrap; animation: scroll-left 32s linear infinite;
+    padding-left: 100%;
+  }
+  .ticker-wrap:hover .ticker-track{ animation-play-state: paused; }
+  .ticker-item{
+    font-size:12.5px; color:#EAF1F7; padding-right:48px; font-weight:500;
+  }
+  @keyframes scroll-left{
+    0%{ transform:translateX(0); }
+    100%{ transform:translateX(-100%); }
+  }
+
+  /* ---------- Radio hero ---------- */
+  .radio-hero{
+    margin: 16px 16px 6px;
+    background: linear-gradient(160deg, var(--navy) 0%, var(--navy-deep) 100%);
+    border-radius: 20px;
+    padding: 22px 20px 20px;
+    color:#fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .radio-hero::after{
+    content:"";
+    position:absolute; inset:0;
+    background: radial-gradient(circle at 88% -10%, rgba(30,144,199,.35), transparent 55%);
+    pointer-events:none;
+  }
+  .hero-top-row{
+    display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;
+  }
+  .hero-badge{
+    display:flex; align-items:center; gap:6px;
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600;
+    letter-spacing:.08em; text-transform:uppercase; color:#fff;
+    background: rgba(226,71,45,.18); border:1px solid rgba(226,71,45,.5);
+    padding:5px 10px; border-radius:20px;
+  }
+  .hero-badge .dot{ width:6px; height:6px; border-radius:50%; background:var(--live); }
+  .hero-listeners{
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:rgba(255,255,255,.55);
+  }
+  .hero-main{
+    display:flex; align-items:center; gap:16px;
+  }
+  .hero-play{
+    width:72px; height:72px; border-radius:50%; background:var(--live);
+    border:none; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; box-shadow: 0 8px 24px rgba(226,71,45,.4);
+    transition: transform .15s ease;
+  }
+  .hero-play:active{ transform: scale(.93); }
+  .hero-play svg{ width:28px; height:28px; fill:#fff; }
+  .hero-text{ min-width:0; flex:1; }
+  .hero-eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.08em;
+    text-transform:uppercase; color:rgba(255,255,255,.6); margin-bottom:4px;
+  }
+  .hero-name{
+    font-family:'Fraunces', serif; font-weight:700; font-size:24px; line-height:1.1;
+    margin-bottom:6px;
+  }
+  .hero-status{ font-size:12.5px; color:rgba(255,255,255,.75); }
+  .wave{
+    display:flex; align-items:flex-end; gap:3px; height:20px; margin-top:14px;
+  }
+  .wave span{
+    width:3px; background: rgba(255,255,255,.5); border-radius:2px;
+    animation: bounce 1.1s ease-in-out infinite;
+  }
+  .wave span:nth-child(1){ height:40%; animation-delay: 0s; }
+  .wave span:nth-child(2){ height:80%; animation-delay: .15s; }
+  .wave span:nth-child(3){ height:55%; animation-delay: .3s; }
+  .wave span:nth-child(4){ height:100%; animation-delay: .45s; }
+  .wave span:nth-child(5){ height:65%; animation-delay: .6s; }
+  .wave span:nth-child(6){ height:85%; animation-delay: .75s; }
+  .wave span:nth-child(7){ height:35%; animation-delay: .9s; }
+  .wave.paused span{ animation-play-state: paused; opacity:.35; }
+  @keyframes bounce{ 0%,100%{ transform: scaleY(.3); } 50%{ transform: scaleY(1); } }
+
+  .news-heading{
+    display:flex; align-items:baseline; justify-content:space-between;
+    padding: 10px 16px 0; margin-top: 4px;
+  }
+  .news-heading h2{
+    font-family:'Fraunces',serif; font-weight:600; margin:0;
+    color: var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; font-size:12px;
+  }
+
+  /* ---------- Other stations ---------- */
+  .stations-heading{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 18px 16px 10px; margin-top: 2px;
+  }
+  .stations-heading h2{
+    font-family:'Fraunces',serif; font-weight:600; margin:0;
+    color: var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; font-size:12px;
+  }
+  .search-toggle{
+    width:34px; height:34px; border-radius:50%; background:var(--card);
+    border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; flex-shrink:0;
+  }
+  .search-toggle svg{ width:16px; height:16px; fill:none; stroke:var(--ink-soft); stroke-width:2; }
+  .search-bar-wrap{
+    max-height:0; overflow:hidden; transition: max-height .25s ease;
+    padding: 0 16px;
+  }
+  .search-bar-wrap.open{ max-height:60px; padding-bottom:10px; }
+  .search-bar{
+    width:100%; border:1px solid var(--line); background:var(--card);
+    border-radius:12px; padding:10px 14px; font-family:'Inter',sans-serif;
+    font-size:14px; color:var(--ink); outline:none;
+  }
+  .search-bar:focus{ border-color: var(--accent); }
+  .stations-grid{
+    display:grid; grid-template-columns: 1fr 1fr; gap:12px;
+    padding: 0 16px 22px;
+  }
+  .station-card{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:14px 12px; display:flex; flex-direction:column; align-items:flex-start;
+    gap:10px; cursor:pointer; position:relative;
+  }
+  .station-card.playing{ border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .station-card.disabled{ opacity:.5; cursor:default; }
+  .station-avatar{
+    width:42px; height:42px; border-radius:12px; display:flex; align-items:center;
+    justify-content:center; font-family:'Fraunces',serif; font-weight:700; font-size:16px;
+    color:#fff; flex-shrink:0;
+  }
+  .station-name{
+    font-family:'Fraunces',serif; font-weight:600; font-size:14px; line-height:1.25;
+    color: var(--ink);
+  }
+  .station-genre{
+    font-family:'IBM Plex Mono',monospace; font-size:9.5px; text-transform:uppercase;
+    letter-spacing:.05em; color: var(--ink-soft);
+  }
+  .station-mini-play{
+    position:absolute; top:12px; right:12px; width:28px; height:28px; border-radius:50%;
+    background: var(--paper); display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .station-mini-play svg{ width:12px; height:12px; fill: var(--navy); }
+  .station-card.playing .station-mini-play{ background: var(--live); }
+  .station-card.playing .station-mini-play svg{ fill:#fff; }
+  .no-results{
+    grid-column: 1 / -1; text-align:center; padding:20px; color:var(--ink-soft); font-size:13px;
+  }
+
+  .masthead-title-wrap{ display:flex; flex-direction:column; }
+  .masthead-tagline{
+    font-size:10.5px; color:rgba(255,255,255,.6); margin-top:1px;
+    letter-spacing:.01em;
+  }
+  .info-btn{
+    width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,.12);
+    border:none; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; cursor:pointer; margin-left:auto;
+  }
+  .info-btn svg{ width:15px; height:15px; fill:none; stroke:#fff; stroke-width:2; }
+
+  /* ---------- Panno Sou nou / Aparans ---------- */
+  .panel-overlay{
+    position:fixed; inset:0; background:rgba(6,40,69,.45); z-index:40;
+    opacity:0; pointer-events:none; transition:opacity .2s ease;
+  }
+  .panel-overlay.open{ opacity:1; pointer-events:auto; }
+  .panel{
+    position:fixed; left:0; right:0; bottom:0; z-index:41;
+    background:var(--paper); border-radius:22px 22px 0 0;
+    max-height:82vh; overflow-y:auto;
+    transform: translateY(100%); transition: transform .25s ease;
+    padding: 8px 20px 28px;
+  }
+  .panel.open{ transform: translateY(0); }
+  .panel-handle{
+    width:38px; height:4px; background:var(--line); border-radius:3px;
+    margin: 10px auto 16px;
+  }
+  .panel-tabs{ display:flex; gap:8px; margin-bottom:18px; }
+  .panel-tab{
+    flex:1; text-align:center; padding:9px; border-radius:10px;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600;
+    letter-spacing:.04em; text-transform:uppercase; color:var(--ink-soft);
+    background:var(--card); border:1px solid var(--line); cursor:pointer;
+  }
+  .panel-tab.active{ background:var(--navy); color:#fff; border-color:var(--navy); }
+  .panel-section{ display:none; }
+  .panel-section.active{ display:block; }
+  .about-logo{
+    width:52px; height:42px; background:var(--navy); border-radius:14px;
+    display:flex; align-items:center; justify-content:center; margin-bottom:14px;
+  }
+  .about-logo svg{ width:30px; height:30px; }
+  .about-title{ font-family:'Fraunces',serif; font-weight:700; font-size:20px; margin-bottom:4px; }
+  .about-since{
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-soft);
+    letter-spacing:.04em; text-transform:uppercase; margin-bottom:14px;
+  }
+  .about-text{ font-size:14px; line-height:1.6; color:var(--ink); margin-bottom:12px; }
+  .about-links{ display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .about-link{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; padding:8px 12px;
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    color: var(--navy); text-decoration:none;
+  }
+  .theme-list{ display:flex; flex-direction:column; gap:10px; }
+  .theme-option{
+    display:flex; align-items:center; gap:12px; padding:12px 14px;
+    background:var(--card); border:1.5px solid var(--line); border-radius:14px;
+    cursor:pointer;
+  }
+  .theme-option.active{ border-color: var(--navy); }
+  .theme-swatch{ display:flex; gap:4px; }
+  .theme-swatch span{ width:18px; height:18px; border-radius:50%; display:block; }
+  .theme-name{ font-family:'Fraunces',serif; font-weight:600; font-size:14px; flex:1; }
+  .theme-check{ width:18px; height:18px; flex-shrink:0; }
+  .theme-check svg{ width:100%; height:100%; fill:none; stroke:var(--navy); stroke-width:2.5; }
+
+  /* ---------- Category tabs ---------- */
+  .tabs{
+    display:flex; gap:6px; overflow-x:auto; padding:14px 16px 12px;
+    scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{ display:none; }
+  .tab{
+    flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:11px;
+    letter-spacing:.05em; text-transform:uppercase; font-weight:600;
+    padding:8px 14px; border-radius:20px; background:var(--card);
+    border:1px solid var(--line); color:var(--ink-soft); cursor:pointer;
+  }
+  .tab.active{ background:var(--navy); color:#fff; border-color:var(--navy); }
+
+  /* ---------- Feed ---------- */
+  .feed{ padding: 4px 16px 24px; display:flex; flex-direction:column; gap:14px; }
+  .status{
+    text-align:center; padding: 40px 20px; color:var(--ink-soft); font-size:14px;
+  }
+  .article{
+    background:var(--card); border-radius:14px; border:1px solid var(--line);
+    padding:16px; text-decoration:none; color:inherit; display:block;
+    transition: transform .15s ease;
+  }
+  .article:active{ transform: scale(.98); }
+  .article-eyebrow{
+    display:flex; align-items:center; gap:8px; margin-bottom:8px;
+  }
+  .cat-pill{
+    font-family:'IBM Plex Mono',monospace; font-size:9.5px; text-transform:uppercase;
+    letter-spacing:.06em; font-weight:600; color:var(--navy); background:#EAF1F7;
+    padding:3px 8px; border-radius:5px;
+  }
+  .article-time{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-soft); }
+  .article-title{
+    font-family:'Fraunces', serif; font-size:17px; line-height:1.32; font-weight:600;
+    margin:0 0 6px;
+  }
+  .article-excerpt{
+    font-size:13px; color:var(--ink-soft); line-height:1.5; margin:0;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+
+  ::selection{ background: var(--accent); color:#fff; }
+</style>
+</head>
+<body>
+
+  <div class="masthead">
+    <div class="masthead-row">
+      <div class="masthead-icon">
+        <svg viewBox="0 0 100 100" fill="none"><path d="M50 8c-16 0-16 12-24 18-4 3-4 9 2 11 5 2 6 8 3 12-4 5 2 11 8 8 6-3 12 1 12 8 0 6 8 8 11 2 3-6 9-8 14-4 5 4 12-2 9-8-3-6 1-12 7-13 6-1 6-9 0-11-6-2-8-8-5-13 3-5-3-11-8-8-5 3-11-1-11-7 0-6-8-8-11-2-3 6-9 8-14 4-2-2-5-2-7 0 3-2 4 3 1 5-1 5-6 3-8-1z" fill="#0B3D6E"/></svg>
+      </div>
+      <div class="masthead-title-wrap">
+        <div class="masthead-title">Radio Haïti</div>
+        <div class="masthead-tagline">Enfòme w, 24/24 · 7/7</div>
+      </div>
+      <button class="info-btn" id="infoBtn" aria-label="Sou nou">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.5" r=".5" fill="#fff"/></svg>
+      </button>
+      <div class="masthead-date" id="dateBox">—</div>
+    </div>
+    <div class="ticker-wrap">
+      <div class="ticker-label">Dènye nouvèl</div>
+      <div class="ticker-track" id="tickerTrack">
+        <span class="ticker-item">Chajman nouvèl yo...</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="radio-hero">
+    <div class="hero-top-row">
+      <div class="hero-badge"><span class="dot"></span>Dirèk</div>
+      <div class="hero-listeners" id="hourNow">—</div>
+    </div>
+    <div class="hero-main">
+      <button class="hero-play" id="playBtn" aria-label="Jwe radyo a">
+        <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="hero-text">
+        <div class="hero-eyebrow">Kap pase kounye a</div>
+        <div class="hero-name">Radio Haïti</div>
+        <div class="hero-status" id="radioStatus">Tape pou koute anliy</div>
+      </div>
+    </div>
+    <div class="wave paused" id="wave">
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <div class="stations-heading">
+    <h2>Lòt estasyon</h2>
+    <div class="search-toggle" id="searchToggle" aria-label="Chèche yon estasyon">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
+  </div>
+  <div class="search-bar-wrap" id="searchBarWrap">
+    <input class="search-bar" id="searchInput" type="text" placeholder="Chèche yon estasyon (non, jan mizik...)" />
+  </div>
+  <div class="stations-grid" id="stationsGrid"></div>
+
+  <div class="news-heading"><h2>Nouvèl Lakay</h2></div>
+
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-cat="all">Tout</div>
+    <div class="tab" data-cat="Actualités">Aktyalite</div>
+    <div class="tab" data-cat="Politique">Politik</div>
+    <div class="tab" data-cat="Sports">Espò</div>
+    <div class="tab" data-cat="Culture">Kilti</div>
+    <div class="tab" data-cat="International">Dyaspora</div>
+  </div>
+
+  <div class="feed" id="feed">
+    <div class="status">Chajman nouvèl Presslakay yo...</div>
+  </div>
+
+  <div class="panel-overlay" id="panelOverlay"></div>
+  <div class="panel" id="panel">
+    <div class="panel-handle"></div>
+    <div class="panel-tabs">
+      <div class="panel-tab active" data-panel="about">Sou nou</div>
+      <div class="panel-tab" data-panel="theme">Aparans</div>
+    </div>
+
+    <div class="panel-section active" id="panelAbout">
+      <div class="about-logo">
+        <svg viewBox="0 0 100 100" fill="none"><path d="M50 8c-16 0-16 12-24 18-4 3-4 9 2 11 5 2 6 8 3 12-4 5 2 11 8 8 6-3 12 1 12 8 0 6 8 8 11 2 3-6 9-8 14-4 5 4 12-2 9-8-3-6 1-12 7-13 6-1 6-9 0-11-6-2-8-8-5-13 3-5-3-11-8-8-5 3-11-1-11-7 0-6-8-8-11-2-3 6-9 8-14 4-2-2-5-2-7 0 3-2 4 3 1 5-1 5-6 3-8-1z" fill="#fff"/></svg>
+      </div>
+      <div class="about-title">Radio Haïti</div>
+      <div class="about-since">Depi 2 Out 2010</div>
+      <p class="about-text">Radio Haïti bay Ayisyen toupatou yon sèl kote pou yo rete konekte: nouvèl ki soti dirèkteman sou Presslakay, ansanm ak yon seleksyon estasyon radyo ayisyen pou koute anliy — tout bagay gratis, 24 sou 24, 7 jou sou 7.</p>
+      <p class="about-text">Misyon nou senp: kenbe dyaspora a ak popilasyon lakay la enfòme san yo pa bezwen kouri dèyè 10 aplikasyon diferan.</p>
+      <div class="about-links">
+        <a class="about-link" href="mailto:presslakay02@gmail.com">Kontakte nou</a>
+        <a class="about-link" href="https://presslakay.net" target="_blank" rel="noopener">Sit Presslakay</a>
+        <a class="about-link" href="https://wa.me/50938973939" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+
+    <div class="panel-section" id="panelTheme">
+      <div class="theme-list" id="themeList"></div>
+    </div>
+  </div>
+
+<script>
+  // ---------- Panno Sou nou / Aparans ----------
+  const infoBtn = document.getElementById('infoBtn');
+  const panel = document.getElementById('panel');
+  const panelOverlay = document.getElementById('panelOverlay');
+  const panelAbout = document.getElementById('panelAbout');
+  const panelTheme = document.getElementById('panelTheme');
+
+  function openPanel(){
+    panel.classList.add('open');
+    panelOverlay.classList.add('open');
+  }
+  function closePanel(){
+    panel.classList.remove('open');
+    panelOverlay.classList.remove('open');
+  }
+  infoBtn.addEventListener('click', openPanel);
+  panelOverlay.addEventListener('click', closePanel);
+
+  document.querySelectorAll('.panel-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const target = tab.dataset.panel;
+      panelAbout.classList.toggle('active', target === 'about');
+      panelTheme.classList.toggle('active', target === 'theme');
+    });
+  });
+
+  // Koulè segondè: aksan/live rete brand navy a fiks, sèl aksan segondè a chanje
+  const THEMES = [
+    { id:'klasik',  name:'Klasik',  accent:'#1E90C7', live:'#E2472D' },
+    { id:'solèy',   name:'Solèy',   accent:'#D98A1F', live:'#C4272A' },
+    { id:'karayib', name:'Karayib', accent:'#159C83', live:'#FF6B4A' },
+  ];
+  let currentTheme = 'klasik';
+
+  function applyTheme(id){
+    const t = THEMES.find(x => x.id === id) || THEMES[0];
+    document.documentElement.style.setProperty('--accent', t.accent);
+    document.documentElement.style.setProperty('--live', t.live);
+    currentTheme = id;
+    renderThemes();
+  }
+
+  function renderThemes(){
+    const themeList = document.getElementById('themeList');
+    themeList.innerHTML = THEMES.map(t => `
+      <div class="theme-option ${currentTheme === t.id ? 'active' : ''}" data-theme="${t.id}">
+        <div class="theme-swatch">
+          <span style="background:${t.accent}"></span>
+          <span style="background:${t.live}"></span>
+        </div>
+        <div class="theme-name">${t.name}</div>
+        <div class="theme-check">${currentTheme === t.id ? '<svg viewBox="0 0 24 24"><polyline points="4 12 9 17 20 6"/></svg>' : ''}</div>
+      </div>
+    `).join('');
+    document.querySelectorAll('.theme-option').forEach(opt => {
+      opt.addEventListener('click', () => applyTheme(opt.dataset.theme));
+    });
+  }
+  renderThemes();
+
+  // ---------- Date ----------
+  const dateBox = document.getElementById('dateBox');
+  const now = new Date();
+  const opts = { weekday:'long', day:'numeric', month:'long' };
+  dateBox.textContent = now.toLocaleDateString('fr-FR', opts).toUpperCase();
+
+  // ---------- RSS feed (Presslakay) ----------
+  // NOTE: sit sa a itilize yon pwoxy piblik pou kontounen restriksyon CORS.
+  // Pou vèsyon final production an, ranplase pwoxy sa a ak yon backend pwòp.
+  const FEED_URL = 'https://presslakay.net/feed/';
+  const PROXY = 'https://api.allorigins.win/raw?url=';
+
+  let allArticles = [];
+
+  function timeAgo(dateStr){
+    const d = new Date(dateStr);
+    const diffMs = Date.now() - d.getTime();
+    const mins = Math.floor(diffMs/60000);
+    if (mins < 60) return mins <= 1 ? 'kounye a' : mins + ' min';
+    const hrs = Math.floor(mins/60);
+    if (hrs < 24) return hrs + ' è';
+    const days = Math.floor(hrs/24);
+    return days + ' jou';
+  }
+
+  function stripHtml(html){
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  }
+
+  function renderTicker(items){
+    const track = document.getElementById('tickerTrack');
+    track.innerHTML = items.slice(0,8).map(a =>
+      `<span class="ticker-item">${a.title}</span>`
+    ).join('<span class="ticker-item">•</span>');
+  }
+
+  function renderFeed(cat){
+    const feed = document.getElementById('feed');
+    const filtered = cat === 'all' ? allArticles : allArticles.filter(a => a.categories.includes(cat));
+    if (!filtered.length){
+      feed.innerHTML = '<div class="status">Pa gen atik pou kategori sa a kounye a.</div>';
+      return;
+    }
+    feed.innerHTML = filtered.map(a => `
+      <a class="article" href="${a.link}" target="_blank" rel="noopener">
+        <div class="article-eyebrow">
+          <span class="cat-pill">${a.categories[0] || 'Nouvèl'}</span>
+          <span class="article-time">${timeAgo(a.pubDate)}</span>
+        </div>
+        <h3 class="article-title">${a.title}</h3>
+        <p class="article-excerpt">${a.excerpt}</p>
+      </a>
+    `).join('');
+  }
+
+  async function loadFeed(){
+    try{
+      const res = await fetch(PROXY + encodeURIComponent(FEED_URL));
+      const xmlText = await res.text();
+      const xml = new DOMParser().parseFromString(xmlText, 'text/xml');
+      const items = Array.from(xml.querySelectorAll('item'));
+      allArticles = items.map(item => {
+        const title = item.querySelector('title')?.textContent || 'San tit';
+        const link = item.querySelector('link')?.textContent || '#';
+        const pubDate = item.querySelector('pubDate')?.textContent || new Date().toString();
+        const descRaw = item.querySelector('description')?.textContent || '';
+        const categories = Array.from(item.querySelectorAll('category')).map(c => c.textContent);
+        return {
+          title: stripHtml(title),
+          link,
+          pubDate,
+          excerpt: stripHtml(descRaw).slice(0, 140) + '…',
+          categories: categories.length ? categories : ['Nouvèl']
+        };
+      });
+      if (!allArticles.length) throw new Error('vid');
+      renderTicker(allArticles);
+      renderFeed('all');
+    }catch(err){
+      document.getElementById('feed').innerHTML =
+        '<div class="status">Nou pa t ka chaje nouvèl yo kounye a.<br>Tcheke koneksyon ou epi eseye ankò.</div>';
+      document.getElementById('tickerTrack').innerHTML =
+        '<span class="ticker-item">Nouvèl yo poko disponib — tcheke koneksyon entènèt la</span>';
+    }
+  }
+
+  loadFeed();
+  setInterval(loadFeed, 5 * 60 * 1000); // rafrechi chak 5 minit
+
+  // ---------- Tabs ----------
+  document.getElementById('tabs').addEventListener('click', (e) => {
+    const tab = e.target.closest('.tab');
+    if (!tab) return;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    renderFeed(tab.dataset.cat);
+  });
+
+  // ---------- Radio player (Radio Haïti + lòt estasyon) ----------
+  // ⚠️ REMPLASE lyen sa a ak vrè lyen stream Radio Haïti a lè li disponib.
+  const STREAM_URL = 'https://stream.zeno.fm/PLACEHOLDER-STREAM-ID';
+
+  // Lòt estasyon yo: rale otomatikman nan Radio-Browser (anyè piblik gratis,
+  // api.radio-browser.info) — pa gen lyen "en dur" isit la, chak estasyon
+  // jwenn vrè URL stream li a nan moman app la chaje.
+  //
+  // 📌 POU METE LOGO MANYÈLMAN: kole lyen imaj ou a nan chan "logo" pou
+  // estasyon konsène a (egzanp logo:'https://mon-lyen.com/logo-metropole.png').
+  // Si "logo" vid, app la ap montre inisyal koulè kòm ranplasan otomatikman.
+  const STATION_QUERIES = [
+    { id:'metropole', search:'Radio Metropole Haiti', label:'Radio Métropole', color:'#3D5AA6', logo:'' },
+    { id:'mega',      search:'Mega Haiti',            label:'Mega 103.7 FM',  color:'#C4272A', logo:'' },
+    { id:'caraibes',  search:'Caraibes FM',            label:'Caraïbes FM',    color:'#1E6FA8', logo:'' },
+    { id:'kiskeya',   search:'Radio Kiskeya',          label:'Radio Kiskeya',  color:'#8E2E3C', logo:'' },
+    { id:'scoop',     search:'Scoop FM Haiti',         label:'Scoop FM',       color:'#D98A1F', logo:'' },
+    { id:'vision2000',search:'Radio Vision 2000',      label:'Vision 2000',   color:'#2E7D5B', logo:'' },
+  ];
+
+  let STATIONS = []; // ranpli apre chajman API a
+
+  const RB_API = 'https://de1.api.radio-browser.info';
+
+  async function fetchStation(q){
+    try{
+      const res = await fetch(
+        `${RB_API}/json/stations/search?name=${encodeURIComponent(q.search)}&limit=1&hidebroken=true&order=clickcount&reverse=true`
+      );
+      const data = await res.json();
+      const s = data[0];
+      // Priyorite: logo manyèl ou mete a > favicon API a > inisyal koulè
+      const resolvedLogo = q.logo || (s && s.favicon) || null;
+      if (!s || !s.url_resolved) return { ...q, stream:null, favicon:resolvedLogo };
+      return { ...q, stream: s.url_resolved, favicon: resolvedLogo };
+    }catch(err){
+      return { ...q, stream:null, favicon:q.logo || null };
+    }
+  }
+
+  async function loadStations(){
+    stationsGrid.innerHTML = STATION_QUERIES.map(q => `
+      <div class="station-card" data-id="${q.id}" style="opacity:.5">
+        <div class="station-avatar" style="background:${q.color}">${initials(q.label)}</div>
+        <div>
+          <div class="station-name">${q.label}</div>
+          <div class="station-genre">Chajman...</div>
+        </div>
+      </div>
+    `).join('');
+    STATIONS = await Promise.all(STATION_QUERIES.map(fetchStation));
+    renderStations(searchInput.value);
+  }
+
+  const audio = new Audio();
+  audio.preload = 'none';
+  let isPlaying = false;
+  let currentId = 'radiohaiti'; // 'radiohaiti' oswa id yon lòt estasyon
+
+  const playBtn = document.getElementById('playBtn');
+  const playIcon = document.getElementById('playIcon');
+  const radioStatus = document.getElementById('radioStatus');
+  const wave = document.getElementById('wave');
+  const hourNow = document.getElementById('hourNow');
+  const stationsGrid = document.getElementById('stationsGrid');
+  const searchToggle = document.getElementById('searchToggle');
+  const searchBarWrap = document.getElementById('searchBarWrap');
+  const searchInput = document.getElementById('searchInput');
+
+  function updateClock(){
+    hourNow.textContent = new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+  }
+  updateClock();
+  setInterval(updateClock, 30000);
+
+  function initials(name){
+    return name.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+  }
+
+  function renderStations(filter=''){
+    const q = filter.trim().toLowerCase();
+    if (!STATIONS.length) return; // toujou nan chajman
+    const list = STATIONS.filter(s => s.label.toLowerCase().includes(q));
+    if (!list.length){
+      stationsGrid.innerHTML = '<div class="no-results">Pa gen estasyon ki koresponn.</div>';
+      return;
+    }
+    stationsGrid.innerHTML = list.map(s => `
+      <div class="station-card ${currentId === s.id && isPlaying ? 'playing' : ''} ${!s.stream ? 'disabled' : ''}" data-id="${s.id}">
+        <div class="station-avatar" style="background:${s.color}">
+          ${s.favicon ? `<img src="${s.favicon}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:12px;" onerror="this.style.display='none'; this.parentElement.textContent='${initials(s.label)}';">` : initials(s.label)}
+        </div>
+        <div>
+          <div class="station-name">${s.label}</div>
+          <div class="station-genre">${s.stream ? 'Anliy' : 'Pa disponib'}</div>
+        </div>
+        <div class="station-mini-play">
+          <svg viewBox="0 0 24 24">${currentId === s.id && isPlaying
+            ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'
+            : '<path d="M8 5v14l11-7z"/>'}</svg>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  searchToggle.addEventListener('click', () => {
+    searchBarWrap.classList.toggle('open');
+    if (searchBarWrap.classList.contains('open')) searchInput.focus();
+  });
+  searchInput.addEventListener('input', (e) => renderStations(e.target.value));
+
+  function setHeroUI(playing){
+    playIcon.innerHTML = playing
+      ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'
+      : '<path d="M8 5v14l11-7z"/>';
+    wave.classList.toggle('paused', !playing);
+    radioStatus.textContent = playing
+      ? (currentId === 'radiohaiti' ? 'Ap jwe kounye a' : 'Ap jwe: ' + (STATIONS.find(s=>s.id===currentId)?.label || ''))
+      : 'Tape pou koute anliy';
+  }
+
+  async function playStream(id, url){
+    if (!url){
+      radioStatus.textContent = 'Stream la pa disponib kounye a';
+      return;
+    }
+    currentId = id;
+    audio.src = url;
+    radioStatus.textContent = 'Konekte...';
+    try{
+      await audio.play();
+      isPlaying = true;
+      setHeroUI(true);
+      renderStations(searchInput.value);
+    }catch(err){
+      isPlaying = false;
+      radioStatus.textContent = 'Stream la pa disponib kounye a';
+      renderStations(searchInput.value);
+    }
+  }
+
+  function stopStream(){
+    audio.pause();
+    isPlaying = false;
+    setHeroUI(false);
+    renderStations(searchInput.value);
+  }
+
+  playBtn.addEventListener('click', () => {
+    if (isPlaying && currentId === 'radiohaiti'){
+      stopStream();
+    } else {
+      playStream('radiohaiti', STREAM_URL);
+    }
+  });
+
+  stationsGrid.addEventListener('click', (e) => {
+    const card = e.target.closest('.station-card');
+    if (!card) return;
+    const id = card.dataset.id;
+    if (isPlaying && currentId === id){
+      stopStream();
+    } else {
+      const station = STATIONS.find(s => s.id === id);
+      playStream(id, station.stream);
+    }
+  });
+
+  loadStations();
+
+  // ---------- Enskri Service Worker (mande pou PWA / app Android) ----------
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js').catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
